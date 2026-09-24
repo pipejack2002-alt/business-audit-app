@@ -225,7 +225,7 @@ export default function Home() {
                     type="text"
                     value={companyData.companyName}
                     onChange={(e) => updateField('companyName', e.target.value)}
-                    placeholder="Ej. TributoApp S.A.S."
+                    placeholder="Ej. CloudFiscal Tech S.A.S."
                     className="w-full bg-slate-950/80 border border-slate-800 focus:border-indigo-500 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   />
                 </div>
@@ -504,7 +504,7 @@ export default function Home() {
                   Aún no has cargado documentos para auditar
                 </h3>
                 <p className="text-xs text-slate-400 max-w-md mx-auto">
-                  Arrastra tu archivo .docx (Plan de Negocio) o .xlsx (Finanzas 12M) en la zona superior, o haz clic en &ldquo;Auditar Archivos de TributoApp&rdquo; para ver la evaluación en tiempo real.
+                  Arrastra tu archivo .docx (Plan de Negocio) o .xlsx (Finanzas 12M) en la zona superior para iniciar la auditoría y calibración automática en tiempo real.
                 </p>
               </div>
             )}

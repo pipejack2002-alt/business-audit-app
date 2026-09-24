@@ -817,21 +817,14 @@ function extractSmartCompanyData(text: string): { data: Partial<CompanyInputData
   data.sector = marketInfo.sector;
 
   // 1. Detectar Nombre de Empresa
-  if (upper.includes('TRIBUTOAPP')) {
-    data.companyName = 'TributoApp S.A.S.';
-    data.industry = 'Tecnología Tributaria / LegalTech & SaaS';
-    data.location = 'Barranquilla, Atlántico (Colombia)';
+  const matchName = text.match(/(?:NOMBRE O TÍTULO DEL PLAN DE NEGOCIO|NOMBRE DE LA EMPRESA|RAZÓN SOCIAL|PROYECTO|EMPRENDIMIENTO)[:\s]+([^\n\r]+)/i);
+  if (matchName && matchName[1]) {
+    data.companyName = matchName[1].trim();
   } else {
-    // Expresión regular flexible para nombres de empresas
-    const matchName = text.match(/(?:NOMBRE O TÍTULO DEL PLAN DE NEGOCIO|NOMBRE DE LA EMPRESA|RAZÓN SOCIAL|PROYECTO|EMPRENDIMIENTO)[:\s]+([^\n\r]+)/i);
-    if (matchName && matchName[1]) {
-      data.companyName = matchName[1].trim();
-    } else {
-      // Buscar primera línea con S.A.S. o Ltda
-      const companyLineMatch = text.match(/([A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s]{3,40}\s+(?:S\.A\.S\.|SAS|LTDA|S\.A\.|S\.C\.S\.))/);
-      if (companyLineMatch && companyLineMatch[1]) {
-        data.companyName = companyLineMatch[1].trim();
-      }
+    // Buscar primera línea con S.A.S. o Ltda
+    const companyLineMatch = text.match(/([A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s]{3,40}\s+(?:S\.A\.S\.|SAS|LTDA|S\.A\.|S\.C\.S\.))/);
+    if (companyLineMatch && companyLineMatch[1]) {
+      data.companyName = companyLineMatch[1].trim();
     }
   }
 

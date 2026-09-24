@@ -10,7 +10,6 @@ export const metadata: Metadata = {
     "plan de negocios",
     "misión y visión",
     "matriz dofa",
-    "tributoapp",
     "fondo emprender",
     "diagnóstico empresarial",
     "modelo financiero excel"
