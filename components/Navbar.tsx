@@ -25,8 +25,8 @@ export default function Navbar({
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Brand */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-              <ShieldCheck className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-slate-900 border border-cyan-500/40 overflow-hidden flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0 p-1">
+              <img src="/favicon.svg" alt="AuditPlan Pro" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -34,8 +34,17 @@ export default function Navbar({
                   AuditPlan <span className="text-indigo-400">Pro</span>
                 </span>
                 <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded-full">
-                  <Sparkles className="w-3 h-3" /> Universal & Multi-Sector
+                  <Sparkles className="w-3 h-3" /> Multi-Sector Enterprise
                 </span>
+                <a
+                  href="https://businessaudit.tributoapp.me"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden lg:inline-flex items-center gap-1.5 text-[10px] font-mono text-emerald-400 bg-emerald-950/50 border border-emerald-500/30 px-2 py-0.5 rounded-full hover:bg-emerald-900/60 transition-colors"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  businessaudit.tributoapp.me
+                </a>
               </div>
               <p className="text-[11px] text-slate-400 truncate max-w-xs sm:max-w-md">
                 Auditoría Estratégica Integral y Diagnóstico de Avance

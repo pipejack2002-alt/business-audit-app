@@ -99,21 +99,30 @@ export default function ProjectAreaAuditView({
       {/* Top Score & Progress Executive Banner */}
       <div className="rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-950 p-6 shadow-2xl space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs uppercase tracking-wider font-bold text-indigo-400">
-                Auditoría Integral de Avance del Proyecto
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">
-                {report.timestamp}
-              </span>
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-cyan-500/40 overflow-hidden shadow-xl shadow-cyan-500/10 shrink-0 hidden sm:block">
+              <img
+                src="/images/audit-emblem.jpg"
+                alt="AuditPlan Pro"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h1 className="text-2xl font-black text-white mt-1">
-              {report.projectName}
-            </h1>
-            <p className="text-xs text-slate-400 mt-1">
-              Evaluación inteligente de documentos diligenciados o en avance frente a los 9 capítulos de la guía institucional y la proyección financiera en Excel.
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase tracking-wider font-bold text-indigo-400">
+                  Auditoría Integral de Avance del Proyecto
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">
+                  {report.timestamp}
+                </span>
+              </div>
+              <h1 className="text-2xl font-black text-white mt-1">
+                {report.projectName}
+              </h1>
+              <p className="text-xs text-slate-400 mt-1">
+                Evaluación inteligente de documentos diligenciados o en avance frente a los 9 capítulos de la guía institucional y la proyección financiera en Excel.
+              </p>
+            </div>
           </div>
 
           {/* Quick Action to import into Mission / Vision editor */}

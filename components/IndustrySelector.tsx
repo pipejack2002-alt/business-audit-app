@@ -55,18 +55,25 @@ export default function IndustrySelector({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="rounded-2xl border border-indigo-500/30 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 p-6 shadow-xl space-y-2">
-        <div className="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider">
-          <Layers className="w-4 h-4" />
-          <span>Adaptabilidad Multi-Mercado & Enfoque por Industria</span>
+      {/* Visual Showcase Banner */}
+      <div className="relative rounded-2xl overflow-hidden border border-indigo-500/30 shadow-2xl h-48 sm:h-64 group">
+        <img
+          src="/images/audit-sectors-showcase.jpg"
+          alt="Hub de Auditoría Multi-Sectorial"
+          className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/30 flex flex-col justify-end p-6">
+          <div className="flex items-center gap-2 text-cyan-300 text-xs font-bold uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <span>Hub de Auditoría Multi-Sectorial</span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
+            Configuración y Calibración para Cualquier Industria
+          </h2>
+          <p className="text-xs text-slate-300 max-w-3xl mt-1 leading-relaxed">
+            Plataformas SaaS de tecnología, restaurantes y gastronomía, agroindustria de exportación, plantas de manufactura, tiendas retail y firmas de servicios profesionales.
+          </p>
         </div>
-        <h2 className="text-xl font-extrabold text-white">
-          Configuración Sectorial para Cualquier Tipo de Empresa
-        </h2>
-        <p className="text-xs text-slate-300 max-w-3xl leading-relaxed">
-          Cada sector económico tiene exigencias técnicas distintas ante evaluadores, bancos y comités de inversión. Selecciona la industria de tu negocio para que el auditor aplique las rúbricas, fórmulas y verificaciones específicas de tu mercado.
-        </p>
       </div>
 
       {/* Grid of 6 Industry Cards */}

@@ -11,7 +11,8 @@ import {
   FolderOpen,
   Sparkles,
   X,
-  FileCheck
+  FileCheck,
+  Download
 } from 'lucide-react';
 import { DocumentAuditReport } from '../lib/types';
 
@@ -146,6 +147,54 @@ export default function DocumentDropzone({
 
   return (
     <div className="bg-slate-900/90 border border-indigo-500/30 rounded-2xl p-6 shadow-2xl space-y-5">
+      {/* Illustrative Hero Banner */}
+      <div className="relative rounded-2xl overflow-hidden border border-indigo-500/30 shadow-2xl h-44 sm:h-56 group">
+        <img
+          src="/images/audit-hero-analytics.jpg"
+          alt="Auditoría Integral de Planes de Negocio"
+          className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/20 flex flex-col justify-end p-5 sm:p-6">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950/90 border border-cyan-500/40 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-sm">
+              <Sparkles className="w-3 h-3 text-cyan-300" />
+              Auditoría Inteligente Conforme a la Guía Oficial 2025
+            </span>
+          </div>
+          <h2 className="text-lg sm:text-2xl font-black text-white mt-1.5">
+            Ingesta y Diagnóstico Automatizado de Documentos
+          </h2>
+          <p className="text-xs text-slate-300 max-w-2xl mt-1 leading-relaxed hidden sm:block">
+            Sube tu plan de negocios en Word (.docx) y tu proyección financiera en Excel (.xlsx). El motor identificará tu sector económico, auditará la Misión y Visión con los 4 pilares obligatorios y calibrará los 9 capítulos.
+          </p>
+
+          {/* Download sample files chips */}
+          <div className="flex items-center gap-2 mt-3 flex-wrap text-xs">
+            <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+              <Download className="w-3 h-3 text-indigo-400" /> Plantillas de muestra:
+            </span>
+            <a
+              href="/samples/Plan_modelo_negocio_2025_DILIGENCIADO.docx"
+              download
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-[11px] font-medium text-indigo-200 hover:text-white transition-all shadow-sm"
+              title="Descargar Plan de Negocio en Word (.docx)"
+            >
+              <FileText className="w-3 h-3 text-indigo-400" />
+              <span>Plan de Negocio (.docx)</span>
+            </a>
+            <a
+              href="/samples/Modelo_Financiero_12M_TributoApp.xlsx"
+              download
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] font-medium text-emerald-200 hover:text-white transition-all shadow-sm"
+              title="Descargar Modelo Financiero 12 Meses en Excel (.xlsx)"
+            >
+              <FileSpreadsheet className="w-3 h-3 text-emerald-400" />
+              <span>Modelo Financiero 12M (.xlsx)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
