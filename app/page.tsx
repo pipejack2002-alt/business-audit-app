@@ -42,7 +42,7 @@ import {
 } from 'lucide-react';
 
 export default function Home() {
-  const [activePresetId, setActivePresetId] = useState<string>('tributoapp');
+  const [activePresetId, setActivePresetId] = useState<string>('cloudfiscal');
   const [companyData, setCompanyData] = useState<CompanyInputData>({
     ...PRESET_CASES[0].data,
     sector: 'tech'
@@ -54,25 +54,6 @@ export default function Home() {
   const [isPrintModalOpen, setIsPrintModalOpen] = useState<boolean>(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
   const [documentReport, setDocumentReport] = useState<DocumentAuditReport | null>(null);
-
-  // Auto-cargar la auditoría integral de los documentos locales al montar
-  useEffect(() => {
-    fetch('/api/analyze-documents?loadLocalTributo=true')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.report) {
-          setDocumentReport(data.report);
-          if (data.report.extractedCompanyData) {
-            setCompanyData((prev) => ({
-              ...prev,
-              ...data.report.extractedCompanyData,
-              sector: data.report.detectedMarket?.sector || prev.sector || 'tech'
-            }));
-          }
-        }
-      })
-      .catch((err) => console.log('Auto-load notice:', err));
-  }, []);
 
   // Real-time audit recalculation
   const auditReport = useMemo(() => {

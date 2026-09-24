@@ -1,21 +1,21 @@
-﻿import { PresetCase } from './types';
+import { PresetCase } from './types';
 
 export const PRESET_CASES: PresetCase[] = [
   {
-    id: 'tributoapp',
-    name: 'TributoApp S.A.S.',
-    description: 'Plataforma LegalTech & FinTech de gestión de calendario y alertas tributarias DIAN.',
-    badge: 'Caso Real (TributoApp)',
+    id: 'cloudfiscal',
+    name: 'CloudFiscal Tech S.A.S. (Caso de Referencia SaaS)',
+    description: 'Plataforma B2B para automatización de calendarios tributarios y cumplimiento normativo.',
+    badge: 'Ejemplo de Referencia',
     data: {
-      companyName: 'TributoApp S.A.S.',
-      industry: 'Tecnología Tributaria / FinTech / LegalTech',
-      location: 'Barranquilla, Atlántico (Colombia)',
-      targetYear: '2040',
-      mision: 'Somos TributoApp S.A.S., una empresa con sede en Barranquilla, comprometida con acompañar a contribuyentes, independientes, empresas y contadores públicos en el cumplimiento puntual y organizado de sus obligaciones tributarias. A través de nuestra plataforma, combinamos automatización de alertas por último dígito de NIT y análisis de perfil fiscal para evitar sanciones por extemporaneidad.',
-      vision: 'Para el año 2040, ser la plataforma digital líder en gestión de calendario tributario y alertas de cumplimiento fiscal en la región Caribe y Colombia. Nos distinguiremos por la actualización constante frente a las reformas tributarias, la precisión en la información distrital y nacional, y una atención técnica de alta calidad.',
-      values: '• Precisión Normativa: Verificación rigurosa con fuentes oficiales de la DIAN y entes distritales.\n• Puntualidad Absoluta: Sistemas de alertas automáticas ejecutados con anticipación oportuna.\n• Seguridad y Confianza: Confidencialidad y custodia estricta de perfiles tributarios.',
-      valueProposition: 'Alertas predictivas automatizadas por último dígito de NIT que eliminan el 100% del riesgo de extemporaneidad y sanciones tributarias ante la DIAN y Secretarías de Hacienda locales.',
-      targetAudience: 'Contribuyentes personas naturales, trabajadores independientes, pequeñas y medianas empresas (PYMES) y contadores públicos con cartera múltiple.'
+      companyName: 'CloudFiscal Tech S.A.S.',
+      industry: 'Tecnología / Software SaaS / LegalTech',
+      location: 'Bogotá, Colombia',
+      targetYear: '2030',
+      mision: 'Somos CloudFiscal Tech S.A.S., una empresa especializada en optimizar el cumplimiento tributario y contable para empresas y profesionales independientes mediante una plataforma en la nube intuitiva y segura, reduciendo riesgos de sanción y ahorrando tiempo operativo.',
+      vision: 'Para el año 2030, posicionarnos como la solución SaaS líder en gestión tributaria automatizada para más de 10.000 empresas en Latinoamérica, destacándonos por la precisión algorítmica y la interoperabilidad contable.',
+      values: '• Precisión y Cumplimiento Normativo\n• Seguridad de la Información y Cifrado Bancario\n• Innovación Continua y Simplicidad de Uso',
+      valueProposition: 'Automatización inteligente de plazos y cálculo predictivo que disminuye en un 95% el riesgo de extemporaneidad en declaraciones fiscales.',
+      targetAudience: 'Contadores públicos independientes, directores financieros (CFOs) y pequeñas y medianas empresas (PYMES).'
     }
   },
   {

@@ -11,8 +11,7 @@ import {
   FolderOpen,
   Sparkles,
   X,
-  FileCheck,
-  Download
+  FileCheck
 } from 'lucide-react';
 import { DocumentAuditReport } from '../lib/types';
 
@@ -113,42 +112,10 @@ export default function DocumentDropzone({
     }
   };
 
-  const handleLoadLocalTributo = async () => {
-    setIsLoading(true);
-    setErrorMsg(null);
-    setSuccessMsg(null);
-
-    try {
-      const res = await fetch('/api/analyze-documents?loadLocalTributo=true');
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Error al cargar los documentos de TributoApp');
-      }
-
-      const sectorLabel = data.report.detectedMarket?.sectorName || 'Tecnología, SaaS & Software';
-      const misionScore = data.report.strategicIdentityAudit?.misionScore;
-      const misionScoreMsg = misionScore !== undefined ? ` • Misión: ${misionScore}/100` : '';
-      setSuccessMsg(`¡Documentos de TributoApp auditados con éxito! Mercado: ${sectorLabel}${misionScoreMsg}.`);
-      onAuditComplete(data.report);
-      if (data.report.extractedCompanyData) {
-        onApplyExtractedData({
-          ...data.report.extractedCompanyData,
-          sector: data.report.detectedMarket?.sector || 'tech'
-        });
-      }
-    } catch (err: any) {
-      console.error(err);
-      setErrorMsg(err.message || 'Error al cargar los archivos locales de TributoApp.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="bg-slate-900/90 border border-indigo-500/30 rounded-2xl p-6 shadow-2xl space-y-5">
       {/* Illustrative Hero Banner */}
-      <div className="relative rounded-2xl overflow-hidden border border-indigo-500/30 shadow-2xl h-44 sm:h-56 group">
+      <div className="relative rounded-2xl overflow-hidden border border-indigo-500/30 shadow-2xl h-44 sm:h-52 group">
         <img
           src="/images/audit-hero-analytics.jpg"
           alt="Auditoría Integral de Planes de Negocio"
@@ -164,34 +131,9 @@ export default function DocumentDropzone({
           <h2 className="text-lg sm:text-2xl font-black text-white mt-1.5">
             Ingesta y Diagnóstico Automatizado de Documentos
           </h2>
-          <p className="text-xs text-slate-300 max-w-2xl mt-1 leading-relaxed hidden sm:block">
+          <p className="text-xs text-slate-300 max-w-2xl mt-1 leading-relaxed">
             Sube tu plan de negocios en Word (.docx) y tu proyección financiera en Excel (.xlsx). El motor identificará tu sector económico, auditará la Misión y Visión con los 4 pilares obligatorios y calibrará los 9 capítulos.
           </p>
-
-          {/* Download sample files chips */}
-          <div className="flex items-center gap-2 mt-3 flex-wrap text-xs">
-            <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
-              <Download className="w-3 h-3 text-indigo-400" /> Plantillas de muestra:
-            </span>
-            <a
-              href="/samples/Plan_modelo_negocio_2025_DILIGENCIADO.docx"
-              download
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-[11px] font-medium text-indigo-200 hover:text-white transition-all shadow-sm"
-              title="Descargar Plan de Negocio en Word (.docx)"
-            >
-              <FileText className="w-3 h-3 text-indigo-400" />
-              <span>Plan de Negocio (.docx)</span>
-            </a>
-            <a
-              href="/samples/Modelo_Financiero_12M_TributoApp.xlsx"
-              download
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-[11px] font-medium text-emerald-200 hover:text-white transition-all shadow-sm"
-              title="Descargar Modelo Financiero 12 Meses en Excel (.xlsx)"
-            >
-              <FileSpreadsheet className="w-3 h-3 text-emerald-400" />
-              <span>Modelo Financiero 12M (.xlsx)</span>
-            </a>
-          </div>
         </div>
       </div>
 
@@ -213,17 +155,6 @@ export default function DocumentDropzone({
             Arrastra tu Plan de Negocio (terminado o en avance parcial) y tu modelo presupuestal en Excel. El sistema identificará inteligentemente el sector de mercado, evaluará la Misión y Visión con los 4 pilares obligatorios y calibrará los 9 capítulos con recomendaciones a la medida.
           </p>
         </div>
-
-        {/* Quick button to load TributoApp documents */}
-        <button
-          onClick={handleLoadLocalTributo}
-          disabled={isLoading}
-          type="button"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-cyan-200 bg-cyan-950/60 hover:bg-cyan-900/80 border border-cyan-700/50 hover:border-cyan-500 shadow-lg shadow-cyan-950/50 transition-all cursor-pointer shrink-0 disabled:opacity-50"
-        >
-          <Sparkles className="w-4 h-4 text-cyan-400" />
-          <span>Auditar Archivos de TributoApp (Word + Excel)</span>
-        </button>
       </div>
 
       {/* Drag & Drop Zone */}
