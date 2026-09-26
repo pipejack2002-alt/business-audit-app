@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BusinessAuditReport, CompanyInputData } from '../lib/types';
 import { generateStrategicDofa } from '../lib/dofaEngine';
-import { Printer, X, ShieldCheck, CheckCircle2, AlertTriangle, XCircle, Compass, Target, Award } from 'lucide-react';
+import { getSectorCostingDefaults, calculateProductModel, calculateBreakEven } from '../lib/financialEngine';
+import { Printer, X, ShieldCheck } from 'lucide-react';
 
 interface PrintReportModalProps {
   report: BusinessAuditReport;
@@ -36,6 +37,35 @@ export default function PrintReportModal({
   };
 
   const dofa = generateStrategicDofa(currentCompany);
+
+  const sectorDefaults = useMemo(() => getSectorCostingDefaults(currentCompany.sector || 'tech'), [currentCompany.sector]);
+  const productCostModel = useMemo(() => {
+    const totalFixed = sectorDefaults.fixedCostsItems.reduce((acc, item) => acc + item.monthlyAmount, 0);
+    return calculateProductModel({
+      productName: sectorDefaults.productName,
+      sector: currentCompany.sector || 'tech',
+      expectedMonthlyVolume: sectorDefaults.expectedMonthlyVolume,
+      variableItems: sectorDefaults.variableItems,
+      laborConfig: sectorDefaults.laborConfig,
+      totalMonthlyFixedCosts: totalFixed,
+      pricingMethod: sectorDefaults.pricingMethod,
+      desiredMarginPercent: sectorDefaults.desiredMarginPercent,
+      desiredMarkupPercent: sectorDefaults.desiredMarkupPercent,
+      taxType: sectorDefaults.taxType
+    });
+  }, [sectorDefaults, currentCompany.sector]);
+
+  const breakEvenModel = useMemo(() => {
+    return calculateBreakEven(productCostModel, sectorDefaults.fixedCostsItems);
+  }, [productCostModel, sectorDefaults.fixedCostsItems]);
+
+  const formatCOP = (val: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      maximumFractionDigits: 0
+    }).format(val || 0);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
@@ -244,11 +274,78 @@ export default function PrintReportModal({
             </div>
           </div>
 
-          {/* Section 5: Action Plan Table */}
+          {/* Section 5: Cost of Sales, Pricing & Break-Even Engineering */}
+          <div className="mb-6">
+            <div className="border-b border-slate-300 pb-2 mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                5. Ingeniería de Costo de Ventas, Precios & Punto de Equilibrio (Cap. 3, 4 y 9)
+              </h3>
+              <span className="text-[11px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                Sector: {(currentCompany.sector || 'tech').toUpperCase()}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 text-xs">
+              <div className="border border-slate-200 rounded p-2 bg-slate-50">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Costo Variable (CVU)</span>
+                <span className="font-mono font-bold text-slate-900">{formatCOP(productCostModel.totalVariableCostPerUnit)}</span>
+                <span className="text-[10px] text-slate-600 block mt-0.5">Primo: {formatCOP(productCostModel.primeCost)}</span>
+              </div>
+              <div className="border border-indigo-200 rounded p-2 bg-indigo-50/50">
+                <span className="text-[10px] text-indigo-700 uppercase font-bold block">Precio de Venta Neto</span>
+                <span className="font-mono font-bold text-indigo-900">{formatCOP(productCostModel.calculatedNetSalePrice)}</span>
+                <span className="text-[10px] text-indigo-700 block mt-0.5">Margen: {productCostModel.effectiveGrossMarginPercent}%</span>
+              </div>
+              <div className="border border-emerald-200 rounded p-2 bg-emerald-50/50">
+                <span className="text-[10px] text-emerald-700 uppercase font-bold block">Margen Contrib. (MCU)</span>
+                <span className="font-mono font-bold text-emerald-900">{formatCOP(productCostModel.contributionMarginUnit)}</span>
+                <span className="text-[10px] text-emerald-700 block mt-0.5">Razón: {productCostModel.contributionMarginRatio}%</span>
+              </div>
+              <div className="border border-cyan-200 rounded p-2 bg-cyan-50/50">
+                <span className="text-[10px] text-cyan-700 uppercase font-bold block">Punto de Equilibrio</span>
+                <span className="font-mono font-bold text-cyan-900">{breakEvenModel.breakEvenUnits.toLocaleString()} und/mes</span>
+                <span className="text-[10px] text-cyan-700 block mt-0.5">{formatCOP(breakEvenModel.breakEvenRevenue)}/mes</span>
+              </div>
+            </div>
+
+            <table className="w-full text-left text-[11px] border border-slate-200">
+              <thead className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase text-[9px]">
+                <tr>
+                  <th className="p-1.5">Concepto Técnico</th>
+                  <th className="p-1.5">Fórmula Institucional</th>
+                  <th className="p-1.5 text-right">Valor Parametrizado</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 text-slate-800">
+                <tr>
+                  <td className="p-1.5 font-semibold">Costo Primo Directo</td>
+                  <td className="p-1.5 font-mono text-slate-500 text-[10px]">Materia Prima Directa (MPD) + Mano de Obra Directa (MOD)</td>
+                  <td className="p-1.5 text-right font-mono font-bold">{formatCOP(productCostModel.primeCost)}</td>
+                </tr>
+                <tr>
+                  <td className="p-1.5 font-semibold">Costo Total Unitario Absorbente (CTU)</td>
+                  <td className="p-1.5 font-mono text-slate-500 text-[10px]">CVU + (Costos Fijos Mensuales / Volumen Planeado)</td>
+                  <td className="p-1.5 text-right font-mono font-bold">{formatCOP(productCostModel.totalCostPerUnit)}</td>
+                </tr>
+                <tr>
+                  <td className="p-1.5 font-semibold">Precio Final al Consumidor</td>
+                  <td className="p-1.5 font-mono text-slate-500 text-[10px]">Precio Neto * (1 + {productCostModel.taxType.toUpperCase()} {productCostModel.taxPercent}%)</td>
+                  <td className="p-1.5 text-right font-mono font-bold text-indigo-900">{formatCOP(productCostModel.calculatedFinalSalePrice)}</td>
+                </tr>
+                <tr>
+                  <td className="p-1.5 font-semibold">EBITDA Mensual al Volumen Meta</td>
+                  <td className="p-1.5 font-mono text-slate-500 text-[10px]">Ventas Proyectadas - Costo de Ventas - Gastos Fijos</td>
+                  <td className="p-1.5 text-right font-mono font-bold text-emerald-800">{formatCOP(breakEvenModel.plannedMonthlyEbitda)}/mes</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Section 6: Action Plan Table */}
           <div className="mb-6">
             <div className="border-b border-slate-300 pb-2 mb-3">
               <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-                5. Plan de Ajustes Priorizado
+                6. Plan de Ajustes Priorizado
               </h3>
             </div>
             <table className="w-full text-left text-xs border border-slate-200">

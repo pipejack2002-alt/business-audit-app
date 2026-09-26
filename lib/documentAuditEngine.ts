@@ -9,10 +9,16 @@ import {
   IndustrySector
 } from './types';
 import { detectSectorWithAnalysis, getIndustryConfig } from './industryBenchmarks';
+import { ExcelFinancialAuditResult } from './financialEngine';
 
 export interface DocumentAnalysisInput {
   extractedTexts: { fileName: string; text: string }[];
-  excelSheets?: { fileName: string; sheetNames: string[]; summaryData?: Record<string, any> }[];
+  excelSheets?: {
+    fileName: string;
+    sheetNames: string[];
+    excelAudit?: ExcelFinancialAuditResult;
+    summaryData?: Record<string, unknown>;
+  }[];
 }
 
 export function runComprehensiveDocumentAudit(input: DocumentAnalysisInput): DocumentAuditReport {
@@ -388,6 +394,8 @@ export function runComprehensiveDocumentAudit(input: DocumentAnalysisInput): Doc
   const hasPuntoEq = detectedSheetsUpper.some(s => s.includes('PUNTO') || s.includes('EQUILIBRIO'));
   const hasNomina = detectedSheetsUpper.some(s => s.includes('NOMINA') || s.includes('NÓMINA'));
 
+  const combinedExcelAudit = input.excelSheets?.find(e => e.excelAudit)?.excelAudit;
+
   let m9Status: 'completed' | 'partial' | 'missing' = 'missing';
   let m9Progress = 0;
   let m9Score = 0;
@@ -403,12 +411,33 @@ export function runComprehensiveDocumentAudit(input: DocumentAnalysisInput): Doc
     if (hasPuntoEq) m9Strengths.push('Cálculo analítico de Punto de Equilibrio operativo y financiero.');
     if (hasNomina) m9Strengths.push('Presupuesto de Nómina desagregado con aportes de ley colombiana (salud, pensión, parafiscales).');
     if (hasInversion) m9Strengths.push('Presupuesto de Inversión inicial y requerimiento de capital de trabajo estructurado.');
+    if (hasCostos) m9Strengths.push('Desglose formal de Costos de Ventas, materias primas y valor unitario.');
+    if (hasGastos) m9Strengths.push('Estructura de Gastos Fijos operacionales identificada.');
+    
+    if (combinedExcelAudit) {
+      if (combinedExcelAudit.extractedProducts.length > 0) {
+        m9Strengths.push(`Validación matemática exitosa de ${combinedExcelAudit.extractedProducts.length} productos con margen promedio del ${combinedExcelAudit.averagePortfolioMargin || 0}%.`);
+      }
+      for (const issue of combinedExcelAudit.mathIntegrityIssues) {
+        if (issue.severity === 'error') {
+          m9Improvements.push(`[Inconsistencia Numérica] ${issue.title}: ${issue.message}`);
+          m9Score = Math.max(50, m9Score - 15);
+        } else if (issue.severity === 'warning') {
+          m9Improvements.push(`[Costos] ${issue.title}`);
+        }
+      }
+    }
     m9Improvements.push('Añadir análisis de sensibilidad financiera (escenario optimista, base y pesimista).');
   } else if (hasExcel || upperText.includes('9.0') || upperText.includes('ESTUDIO FINANCIERO')) {
     m9Status = 'partial';
     m9Progress = 50;
     m9Score = 60;
     m9Strengths.push('Se detectan elementos presupuestales o tablas financieras parciales.');
+    if (hasCostos) m9Strengths.push('Presencia de hoja de costos unitarios.');
+    if (hasGastos) m9Strengths.push('Presencia de hoja de gastos fijos.');
+    if (combinedExcelAudit && combinedExcelAudit.extractedProducts.length > 0) {
+      m9Strengths.push(`Se extrajeron ${combinedExcelAudit.extractedProducts.length} ítems con precios de venta y costos.`);
+    }
     m9Improvements.push('Completar el paquete estándar de hojas: Flujo de Caja, Punto de Equilibrio y Estado de Resultados.');
     m9Improvements.push('Subir la hoja de cálculo .xlsx para auditar fórmulas cruzadas y coherencia matemática.');
   } else {
@@ -416,7 +445,7 @@ export function runComprehensiveDocumentAudit(input: DocumentAnalysisInput): Doc
     m9Progress = 10;
     m9Score = 20;
     m9Improvements.push('No se detectó el archivo Excel del modelo presupuestal o el Capítulo 9 Financiero está sin formular.');
-    m9Improvements.push('Subir el archivo .xlsx de proyecciones a 12 meses para auditar la viabilidad económica.');
+    m9Improvements.push('Subir el archivo .xlsx de proyecciones a 12 meses para auditar la viabilidad económica y costos de venta.');
   }
 
   // --- RECOPILACIÓN DE ÁREAS ---
@@ -624,8 +653,11 @@ export function runComprehensiveDocumentAudit(input: DocumentAnalysisInput): Doc
         `Hojas totales analizadas: ${detectedSheets.length}`,
         hasFlujo ? 'Flujo de caja estructurado a 12 meses.' : 'Falta hoja de flujo de caja.',
         hasPuntoEq ? 'Cálculo de punto de equilibrio presente.' : 'Falta punto de equilibrio formal.',
-        hasNomina ? 'Nómina operativa y administrativa proyectada.' : 'Falta hoja de nómina.'
-      ]
+        hasNomina ? 'Nómina operativa y administrativa proyectada.' : 'Falta hoja de nómina.',
+        hasCostos ? 'Hoja de estructura de costos unitarios detectada.' : 'Se sugiere incluir hoja formal de costos unitarios.',
+        combinedExcelAudit?.averagePortfolioMargin ? `Margen bruto promedio del portafolio: ${combinedExcelAudit.averagePortfolioMargin}%` : ''
+      ].filter(Boolean),
+      excelAudit: combinedExcelAudit
     } : undefined
   };
 }

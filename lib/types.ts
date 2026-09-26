@@ -160,6 +160,9 @@ export interface DocumentAuditReport {
     hasBreakEvenSheet: boolean;
     hasPayrollSheet: boolean;
     notes: string[];
+    excelAudit?: import('./financialEngine').ExcelFinancialAuditResult;
+    costModel?: import('./financialEngine').ProductCostModel;
+    breakEvenResult?: import('./financialEngine').FinancialBreakEvenResult;
   };
 }
 

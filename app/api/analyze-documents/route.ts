@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
 import { runComprehensiveDocumentAudit, DocumentAnalysisInput } from '@/lib/documentAuditEngine';
+import { parseAndAuditExcelFinancials } from '@/lib/financialEngine';
 
 export async function GET() {
   return NextResponse.json({
@@ -41,17 +42,19 @@ export async function POST(req: NextRequest) {
               fileName,
               text: mammothRes.value
             });
-          } catch (e: any) {
+          } catch (e: unknown) {
             console.error(`Error procesando docx ${fileName}:`, e);
           }
         } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
           try {
             const wb = XLSX.read(buffer, { type: 'buffer' });
+            const excelAudit = parseAndAuditExcelFinancials(wb);
             analysisInput.excelSheets.push({
               fileName,
-              sheetNames: wb.SheetNames
+              sheetNames: wb.SheetNames,
+              excelAudit
             });
-          } catch (e: any) {
+          } catch (e: unknown) {
             console.error(`Error procesando excel ${fileName}:`, e);
           }
         } else {

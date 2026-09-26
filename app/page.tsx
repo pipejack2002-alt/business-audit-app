@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Navbar from '../components/Navbar';
 import ScoreMeter from '../components/ScoreMeter';
 import CriterionCard from '../components/CriterionCard';
@@ -12,6 +12,7 @@ import ProjectAreaAuditView from '../components/ProjectAreaAuditView';
 import IndustrySelector from '../components/IndustrySelector';
 import DofaAuditView from '../components/DofaAuditView';
 import UniversalBusinessAssistant from '../components/UniversalBusinessAssistant';
+import FinancialCostingSimulator from '../components/FinancialCostingSimulator';
 import { PRESET_CASES } from '../lib/presetCases';
 import { CompanyInputData, DocumentAuditReport, IndustrySector } from '../lib/types';
 import { runFullBusinessAudit } from '../lib/auditEngine';
@@ -23,22 +24,16 @@ import {
   TrendingUp,
   BookOpenCheck,
   Building2,
-  Calendar,
-  MapPin,
-  Briefcase,
   ChevronDown,
   ChevronUp,
   Sparkles,
   ShieldCheck,
   CheckCircle,
-  FileSpreadsheet,
-  AlertCircle,
   FolderKanban,
   UploadCloud,
-  FileText,
   Layers,
   Wand2,
-  ShieldAlert
+  Calculator
 } from 'lucide-react';
 
 export default function Home() {
@@ -48,7 +43,7 @@ export default function Home() {
     sector: 'tech'
   });
   const [activeTab, setActiveTab] = useState<
-    'documents' | 'dashboard' | 'mision' | 'vision' | 'dofa' | 'industry' | 'coherence' | 'normative'
+    'documents' | 'dashboard' | 'costing' | 'mision' | 'vision' | 'dofa' | 'industry' | 'coherence' | 'normative'
   >('documents');
   const [isFormExpanded, setIsFormExpanded] = useState<boolean>(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState<boolean>(false);
@@ -381,6 +376,23 @@ export default function Home() {
             </span>
           </button>
 
+          {/* TAB: COSTOS, PRECIOS & PUNTO DE EQUILIBRIO (NUEVO) */}
+          <button
+            onClick={() => setActiveTab('costing')}
+            type="button"
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-bold tracking-wide transition whitespace-nowrap cursor-pointer ${
+              activeTab === 'costing'
+                ? 'bg-slate-900 border-t-2 border-emerald-400 text-white shadow'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+            }`}
+          >
+            <Calculator className="w-4 h-4 text-emerald-400" />
+            <span>Costos, Precios & Punto de Eq.</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold">
+              Simulador
+            </span>
+          </button>
+
           {/* TAB 2: MISIÓN */}
           <button
             onClick={() => setActiveTab('mision')}
@@ -495,7 +507,7 @@ export default function Home() {
               <ProjectAreaAuditView
                 report={documentReport}
                 onApplyExtractedData={handleApplyExtractedData}
-                onNavigateTab={(tab) => setActiveTab(tab as any)}
+                onNavigateTab={(tab) => setActiveTab(tab)}
               />
             ) : (
               <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 text-center space-y-3">
@@ -509,6 +521,14 @@ export default function Home() {
               </div>
             )}
           </div>
+        )}
+
+        {/* TAB: FINANCIAL COSTING & PRICING SIMULATOR */}
+        {activeTab === 'costing' && (
+          <FinancialCostingSimulator
+            currentSector={companyData.sector || 'tech'}
+            excelAudit={documentReport?.financialHighlights?.excelAudit}
+          />
         )}
 
         {/* TAB 1: DASHBOARD & EXECUTIVE SCORE */}

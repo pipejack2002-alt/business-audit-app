@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import {
   DocumentAuditReport,
-  AreaAuditResult
+  AreaAuditResult,
+  CompanyInputData
 } from '../lib/types';
 import {
   CheckCircle2,
@@ -13,8 +14,6 @@ import {
   ChevronUp,
   FileSpreadsheet,
   FileText,
-  TrendingUp,
-  Award,
   Layers,
   Sparkles,
   ArrowRight,
@@ -24,13 +23,15 @@ import {
   Compass,
   Target,
   ShieldCheck,
-  Building2
+  Building2,
+  Calculator,
+  Award
 } from 'lucide-react';
 
 interface ProjectAreaAuditViewProps {
   report: DocumentAuditReport;
-  onApplyExtractedData: (data: any) => void;
-  onNavigateTab?: (tab: 'dashboard' | 'mision' | 'vision' | 'dofa' | 'industry' | 'coherence') => void;
+  onApplyExtractedData: (data: Partial<CompanyInputData>) => void;
+  onNavigateTab?: (tab: 'dashboard' | 'mision' | 'vision' | 'dofa' | 'industry' | 'coherence' | 'costing') => void;
 }
 
 export default function ProjectAreaAuditView({
@@ -128,7 +129,11 @@ export default function ProjectAreaAuditView({
           {/* Quick Action to import into Mission / Vision editor */}
           {report.extractedCompanyData && (
             <button
-              onClick={() => onApplyExtractedData(report.extractedCompanyData)}
+              onClick={() => {
+                if (report.extractedCompanyData) {
+                  onApplyExtractedData(report.extractedCompanyData);
+                }
+              }}
               type="button"
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer shrink-0"
             >
@@ -560,15 +565,27 @@ export default function ProjectAreaAuditView({
 
       {/* Financial Spreadsheet Highlights Card (if present) */}
       {report.financialHighlights && (
-        <div className="p-5 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 space-y-3">
-          <div className="flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-              <FileSpreadsheet className="w-4 h-4" />
-              <span>Análisis de la Estructura Presupuestal en Excel</span>
+              <FileSpreadsheet className="w-5 h-5 text-emerald-400 shrink-0" />
+              <span>Auditoría de Costos y Estructura Presupuestal en Excel</span>
             </div>
-            <span className="text-xs text-emerald-300 font-medium bg-emerald-900/40 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
-              {report.financialHighlights.sheetsDetected.length} Hojas Verificadas
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-emerald-300 font-medium bg-emerald-900/40 px-2.5 py-1 rounded-full border border-emerald-500/30">
+                {report.financialHighlights.sheetsDetected.length} Hojas Verificadas
+              </span>
+              {onNavigateTab && (
+                <button
+                  onClick={() => onNavigateTab('costing')}
+                  type="button"
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-md shadow-emerald-950 transition cursor-pointer"
+                >
+                  <Calculator className="w-3.5 h-3.5" />
+                  <span>Simulador Financiero & Costos →</span>
+                </button>
+              )}
+            </div>
           </div>
 
           <p className="text-xs text-slate-300">
@@ -586,7 +603,41 @@ export default function ProjectAreaAuditView({
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 pt-2">
+          {/* Excel Audit Summary Metrics if Available */}
+          {report.financialHighlights.excelAudit && (
+            <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-3">
+                <span className="text-slate-400">Productos/Ítems Extraídos:</span>
+                <strong className="text-white font-mono text-sm">
+                  {report.financialHighlights.excelAudit.detectedProductsCount}
+                </strong>
+                {report.financialHighlights.excelAudit.averagePortfolioMargin !== undefined && (
+                  <>
+                    <span className="text-slate-500">|</span>
+                    <span className="text-slate-400">Margen Bruto Promedio:</span>
+                    <strong className="text-emerald-400 font-mono text-sm">
+                      {report.financialHighlights.excelAudit.averagePortfolioMargin}%
+                    </strong>
+                  </>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400">Integridad de Fórmulas:</span>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                  report.financialHighlights.excelAudit.summaryStatus === 'optimo'
+                    ? 'bg-emerald-500/20 text-emerald-300'
+                    : report.financialHighlights.excelAudit.summaryStatus === 'con_observaciones'
+                    ? 'bg-amber-500/20 text-amber-300'
+                    : 'bg-rose-500/20 text-rose-300'
+                }`}>
+                  {report.financialHighlights.excelAudit.summaryStatus.replace('_', ' ')}
+                </span>
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 pt-1">
             <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-xs">
               <p className="text-slate-400">Flujo de Caja Mensual</p>
               <p className="text-emerald-400 font-bold mt-0.5">
