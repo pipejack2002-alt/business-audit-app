@@ -3,7 +3,7 @@ import { PresetCase } from './types';
 export const PRESET_CASES: PresetCase[] = [
   {
     id: 'cloudfiscal',
-    name: 'CloudFiscal Tech S.A.S. (Caso de Referencia SaaS)',
+    name: 'CloudFiscal Tech (SaaS Referencia)',
     description: 'Plataforma B2B para automatización de calendarios tributarios y cumplimiento normativo.',
     badge: 'Ejemplo de Referencia',
     data: {
@@ -20,7 +20,7 @@ export const PRESET_CASES: PresetCase[] = [
   },
   {
     id: 'logirapido',
-    name: 'LogiRápido Express (Caso de Estudio: Errores Frecuentes)',
+    name: 'LogiRápido Express (Caso con Falencias)',
     description: 'Empresa logística con misión ambigua y visión sin año ni métricas.',
     badge: 'Caso con Falencias',
     data: {
@@ -37,7 +37,7 @@ export const PRESET_CASES: PresetCase[] = [
   },
   {
     id: 'bionova',
-    name: 'BioNova Health Tech',
+    name: 'BioNova Health Tech (DeepTech)',
     description: 'Startup de diagnóstico clínico preventivo con inteligencia artificial.',
     badge: 'SaaS Innovador',
     data: {
