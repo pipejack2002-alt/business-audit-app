@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://businessaudit.tributoapp.me"),
+  alternates: {
+    canonical: "./",
+  },
   title: "AuditPlan Pro | Auditoría Empresarial Integral & Diagnóstico de Negocios",
   description: "Plataforma inteligente de auditoría modular de planes de negocio, validación institucional de Misión y Visión (4 pilares), matriz DOFA cruzada y diagnóstico de 9 capítulos.",
   keywords: [
@@ -69,3 +72,4 @@ export default function RootLayout({
     </html>
   );
 }
+
